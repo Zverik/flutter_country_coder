@@ -1,0 +1,16 @@
+name: country_coder
+description: Convert longitude-latitude pairs to ISO 3166-1 codes quickly and locally.
+version: 1.0.0
+homepage: https://github.com/Zverik/flutter_country_coder
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  rbush: ^1.0.0
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  lints: ^1.0.0
+  test: any
