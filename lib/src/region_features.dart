@@ -6,52 +6,46 @@ class RegionFeatureCollection {
   final Map<String, RegionFeature> regionsByCode = {};
   late final WhichPolygon<RegionFeature> whichPolygon;
 
-  RegionFeatureCollection(Map<String, dynamic> featureCollection,
-      [List<dynamic>? serialized]) {
-    if (serialized == null) {
-      regions = [];
-      final geometries = <Map<String, dynamic>>[];
+  RegionFeatureCollection(Map<String, dynamic> featureCollection) {
+    regions = [];
+    final geometries = <Map<String, dynamic>>[];
 
-      for (final feature in featureCollection['features']) {
-        final geometry = feature['geometry'];
-        final region =
-            RegionFeature.fromJson(feature['properties'], geometry != null);
-        regions.add(region);
-        if (geometry != null) {
-          geometries.add({
-            'geometry': geometry,
-            'properties': region,
-          });
-        }
+    for (final feature in featureCollection['features']) {
+      final geometry = feature['geometry'];
+      final region =
+          RegionFeature.fromJson(feature['properties'], geometry != null);
+      regions.add(region);
+      if (geometry != null) {
+        geometries.add({
+          'geometry': geometry,
+          'properties': region,
+        });
       }
-
-      _postProcessRegions();
-
-      whichPolygon = WhichPolygon<RegionFeature>(geometries);
-
-    } else {
-      // Restore data from the serialized structure
-      regions = serialized[0];
-      for (final region in regions)
-        _cacheFeatureByIDs(region);
-      whichPolygon = WhichPolygon.fromSerialized(serialized[1]);
     }
+
+    _postProcessRegions();
+
+    whichPolygon = WhichPolygon<RegionFeature>(geometries);
   }
 
-  factory RegionFeatureCollection.fromSerialized(List<dynamic> data) =>
-      RegionFeatureCollection({}, data);
+  /// Restores inner structures from the serialized data.
+  RegionFeatureCollection.fromSerialized(List<dynamic> data) {
+    regions = data[0];
+    for (final region in regions) _cacheFeatureByIDs(region);
+    whichPolygon = WhichPolygon.fromSerialized(data[1]);
+  }
 
   List<dynamic> serialize() {
     return [regions, whichPolygon.serialize()];
   }
 
-  // Returns the smallest feature of any kind containing the point, if any.
+  /// Returns the smallest feature of any kind containing the point, if any.
   RegionFeature? smallestRegion(double lon, double lat) {
     final region = whichPolygon(lon, lat);
     return region == null ? null : regionsByCode[region.id];
   }
 
-  // Returns the country feature containing `loc`, if any.
+  /// Returns the country feature containing `loc`, if any.
   RegionFeature? countryRegion(double lon, double lat) {
     final region = smallestRegion(lon, lat);
     if (region == null) return null;
@@ -60,7 +54,7 @@ class RegionFeatureCollection {
     return regionsByCode[countryCode];
   }
 
-  // Returns the feature containing `loc` for the `opts`, if any.
+  /// Returns the feature containing `loc` for the `opts`, if any.
   RegionFeature? regionForLoc(double lon, double lat,
       {RegionLevel? level, RegionLevel? maxLevel, RegionProperties? withProp}) {
     final targetLevel = level ?? RegionLevel.country;

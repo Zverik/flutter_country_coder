@@ -1,4 +1,5 @@
 import 'package:country_coder/country_coder.dart';
+import 'package:flutter/foundation.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -13,7 +14,7 @@ void main() {
   });
 
   test('Can load data asynchronously', () async {
-    await query.loadAsync();
+    query.load(await compute(CountryCoder.prepareData, null));
     expect(query.ready, isTrue);
   });
 

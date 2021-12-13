@@ -32,10 +32,12 @@ This means, you get full information on a region, but not its boundaries.
 ## Usage
 
 You do not instantiate a `CountryCoder`, but use a static `instance` property.
-It already has all the borders loaded.
+You should call `load()` once to initialize the instance. There is an option for
+asynchronous loading via `prepareData()` (see the API reference).
 
 ```dart
 final countries = CountryCoder.instance;
+countries.load(); // initialize the instance, does nothing the second time
 
 // Find a country's 2-letter ISO code by longitude and latitude
 final String? code = countries.iso1A2Code(lon: -4.5, lat: 54.2);

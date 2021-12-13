@@ -16,7 +16,7 @@ class LocationMatcher {
   LocationMatcher([Map<String, dynamic>? featureCollection]) {
     if (featureCollection != null) {
       final features =
-          featureCollection['features'] as List<Map<String, dynamic>>;
+          featureCollection['features'].whereType<Map<String, dynamic>>();
       additionalPolygons = WhichPolygon(features);
     } else {
       additionalPolygons = WhichPolygon([]);
@@ -24,8 +24,8 @@ class LocationMatcher {
   }
 
   /// Instantiates the class using an object from [serialize].
-  factory LocationMatcher.fromSerialized(dynamic data) =>
-      LocationMatcher()..additionalPolygons = WhichPolygon.fromSerialized(data);
+  LocationMatcher.fromSerialized(dynamic data)
+      : additionalPolygons = WhichPolygon.fromSerialized(data);
 
   /// Returns a serializable object that can be passed between threads.
   dynamic serialize() => additionalPolygons.serialize();
@@ -64,13 +64,14 @@ class LocationMatcher {
     }
 
     // And finally employ CountryCoder for the remaining ids.
-    if (locationSet.exclude.where((element) => !element.endsWith('.geojson'))
+    if (locationSet.exclude
+        .where((element) => !element.endsWith('.geojson'))
         .any((id) => countryCoder.isIn(lon: lon, lat: lat, inside: id)))
       return false;
 
-    anyIncludes |=
-        locationSet.include.where((element) => !element.endsWith('.geojson'))
-            .any((id) => countryCoder.isIn(lon: lon, lat: lat, inside: id));
+    anyIncludes |= locationSet.include
+        .where((element) => !element.endsWith('.geojson'))
+        .any((id) => countryCoder.isIn(lon: lon, lat: lat, inside: id));
 
     return anyIncludes;
   }

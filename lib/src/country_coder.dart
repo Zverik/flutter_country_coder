@@ -3,12 +3,6 @@ import 'region_feature.dart';
 import 'region_features.dart';
 
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show compute;
-
-List<dynamic> _loadBorders(_) {
-  final data = JsonDecoder().convert(bordersRaw);
-  return RegionFeatureCollection(data).serialize();
-}
 
 /// An offline geocoder for countries and other big territories.
 ///
@@ -28,24 +22,32 @@ class CountryCoder {
 
   /// Synchronously loads the border data and builds trees
   /// out of it. This can take up to a second, so in applications
-  /// try using [loadAsync] instead.
-  CountryCoder load() {
+  /// try calling [prepareData] in an non-UI thread first.
+  CountryCoder load([List<dynamic>? prepared]) {
     if (!ready) {
-      final data = JsonDecoder().convert(bordersRaw);
-      _borders = RegionFeatureCollection(data);
+      if (prepared != null) {
+        _borders = RegionFeatureCollection.fromSerialized(prepared);
+      } else {
+        final data = JsonDecoder().convert(bordersRaw);
+        _borders = RegionFeatureCollection(data);
+      }
     }
     return this;
   }
 
-  /// Loads the border data and builds trees in a separate thread.
-  /// Either `await` on this method, or watch the [ready] property
-  /// to know when it's safe to use the class.
-  Future<CountryCoder> loadAsync() async {
-    if (!ready) {
-      final serialized = await compute(_loadBorders, null);
-      _borders = RegionFeatureCollection.fromSerialized(serialized);
-    }
-    return this;
+  /// Loads the border data separately and returns it in a serialized form.
+  /// Call this from inside the `compute()` function to process data
+  /// in a background thread, and then pass the result to [load]. Like this:
+  ///
+  /// ```dart
+  /// import 'package:flutter/foundation.dart' show compute;
+  ///
+  /// // ...
+  /// CountryCoder.instance.load(await compute(CountryCoder.prepareData, null));
+  /// ```
+  static List<dynamic> prepareData(_) {
+    final data = JsonDecoder().convert(bordersRaw);
+    return RegionFeatureCollection(data).serialize();
   }
 
   /// Returns `true` when the data can be used.

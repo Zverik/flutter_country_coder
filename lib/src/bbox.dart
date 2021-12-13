@@ -7,8 +7,9 @@ class Point {
 
   const Point(this.lon, this.lat);
 
-  factory Point.fromJson(List<dynamic> coords) =>
-      Point(coords[0].toDouble(), coords[1].toDouble());
+  Point.fromJson(List<dynamic> coords)
+      : lon = coords[0].toDouble(),
+        lat = coords[1].toDouble();
 
   @override
   bool operator ==(Object other) {
@@ -31,6 +32,12 @@ class BBox {
   final double maxLat;
 
   const BBox(this.minLon, this.minLat, this.maxLon, this.maxLat);
+
+  BBox.fromJson(List<dynamic> coords)
+      : minLon = coords[0].toDouble(),
+        minLat = coords[1].toDouble(),
+        maxLon = coords[2].toDouble(),
+        maxLat = coords[3].toDouble();
 
   Point get center => Point((minLon + maxLon) / 2.0, (minLat + maxLat) / 2.0);
 

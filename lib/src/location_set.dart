@@ -33,28 +33,25 @@ class LocationSet {
       includeCircular.isEmpty &&
       excludeCircular.isEmpty;
 
-  factory LocationSet.fromJson(Map<String, dynamic> data) {
-    return LocationSet(
-      include: data['include'] == null
-          ? []
-          : (data['include'] as List).whereType<String>().toList(),
-      exclude: data['exclude'] == null
-          ? []
-          : (data['exclude'] as List).whereType<String>().toList(),
-      includeCircular: data['include'] == null
-          ? []
-          : (data['include'] as List)
-              .whereType<List>()
-              .map((e) => LocationSetRadius.fromJson(e))
-              .toList(),
-      excludeCircular: data['exclude'] == null
-          ? []
-          : (data['exclude'] as List)
-              .whereType<List>()
-              .map((e) => LocationSetRadius.fromJson(e))
-              .toList(),
-    );
-  }
+  LocationSet.fromJson(Map<String, dynamic> data)
+      : include = data['include'] == null
+            ? []
+            : (data['include'] as List).whereType<String>().toList(),
+        exclude = data['exclude'] == null
+            ? []
+            : (data['exclude'] as List).whereType<String>().toList(),
+        includeCircular = data['include'] == null
+            ? []
+            : (data['include'] as List)
+                .whereType<List>()
+                .map((e) => LocationSetRadius.fromJson(e))
+                .toList(),
+        excludeCircular = data['exclude'] == null
+            ? []
+            : (data['exclude'] as List)
+                .whereType<List>()
+                .map((e) => LocationSetRadius.fromJson(e))
+                .toList();
 
   Map<String, List<dynamic>> toJson() {
     Map<String, List<dynamic>> result = {};
@@ -90,10 +87,10 @@ class LocationSetRadius {
   const LocationSetRadius(this.longitude, this.latitude,
       [this.radius = kDefaultRadius]);
 
-  factory LocationSetRadius.fromJson(List<dynamic> data) {
-    return LocationSetRadius(
-        data[0], data[1], data.length > 2 ? data[2] : kDefaultRadius);
-  }
+  LocationSetRadius.fromJson(List<dynamic> data)
+      : longitude = data[0].toDouble(),
+        latitude = data[1].toDouble(),
+        radius = data.length > 2 ? data[2].toDouble() : kDefaultRadius;
 
   List<double> toJson() =>
       [longitude, latitude, if (radius != kDefaultRadius) radius];

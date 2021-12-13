@@ -58,8 +58,9 @@ class WhichPolygon<T> {
   }
 
   /// Instantiates the class using an object from [serialize].
-  factory WhichPolygon.fromSerialized(dynamic data) =>
-      WhichPolygon<T>([]).._tree.data = data;
+  WhichPolygon.fromSerialized(dynamic data) {
+    _tree.data = data;
+  }
 
   /// Returns a serializable object that can be passed between threads.
   dynamic serialize() => _tree.data;
