@@ -119,6 +119,6 @@ final inBBox = query.bbox(-30, 41, -28, 51).length;
 
 This library is a straight-up port of several JavaScript libraries:
 
-* [country-coder 5.0.3](https://github.com/ideditor/country-coder) by Quincy Morgan and Bryan Housel, ISC license.
+* [country-coder 5.2.1](https://github.com/ideditor/country-coder) by Quincy Morgan and Bryan Housel, ISC license.
 * [which-polygon 2.2.0](https://github.com/mapbox/which-polygon) by Vladimir Agafonkin, ISC license.
 * [lineclip 1.1.5](https://github.com/mapbox/lineclip) by Vladimir Agafonkin, ISC license.

@@ -46,4 +46,12 @@ void main() {
     expect(matcher(-59.54, 13.16, locSet), isTrue, reason: 'Barbados');
     expect(matcher(-61.2, 13.26, locSet), isFalse, reason: 'Saint Vincent');
   });
+
+  test('exclude-only sets work properly', () {
+    final locSet = LocationSet.fromJson({
+      'exclude': ['DE']
+    });
+    expect(matcher(19.7, 52.3, locSet), isTrue, reason: 'Poland');
+    expect(matcher(10.4, 53.1, locSet), isFalse, reason: 'Germany');
+  });
 }

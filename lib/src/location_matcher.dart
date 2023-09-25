@@ -69,6 +69,9 @@ class LocationMatcher {
         .any((id) => countryCoder.isIn(lon: lon, lat: lat, inside: id)))
       return false;
 
+    // If the list is empty, consider it including everything.
+    if (locationSet.include.isEmpty) return true;
+
     anyIncludes |= locationSet.include
         .where((element) => !element.endsWith('.geojson'))
         .any((id) => countryCoder.isIn(lon: lon, lat: lat, inside: id));
